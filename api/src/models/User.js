@@ -47,11 +47,11 @@ const userModel = (sequelize) => {
     },
     phone: {
         type: DataTypes.STRING,
-        unique: true,
 
     },
     role: {
         type: DataTypes.STRING,
+        defaultValue: "comun",
         allowNull: false,
         validate: {
             isIn: [['comun', 'professional', 'admin']]
