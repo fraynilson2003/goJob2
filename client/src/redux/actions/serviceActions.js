@@ -6,7 +6,7 @@ import { ActionTypes } from "../constants/actions-types";
 //** Helpers */
 import convertObjToQuery from "../../helpers/convertObjToQuery";
 
-//* SERVICES ************ */
+//** SERVICES ********************************* */
 
 export const getService = () => {
   return async (dispatch) => {
@@ -22,12 +22,12 @@ export const createService = (input) => {
   return async (dispatch) => {
     try {
       const json = JSON.stringify(input);
-      // const customConfig = {
-      //   headers: {
-      //     'Authorization': `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZmlyc3ROYW1lIjoiVG9tIiwibGFzdE5hbWUiOiJXaWxzb24iLCJlbWFpbCI6InRvbXdpbHNvbkBleGFtcGxlLmNvbSIsInVzZXIiOiJ0b213aWxzb24iLCJwaG9uZSI6IjEyMzQ1Njc4OTQiLCJyb2xlIjoicHJvZmVzc2lvbmFsIiwiaWF0IjoxNjc3MzUwMTM3LCJleHAiOjE2Nzk5NDIxMzd9.w1Qm7ttqP3Kn98T_B_bSZNkQVX0NhWmhQjelzpDaguI`
-      //   }
-      // }
-
+      //const customConfig = {
+      //  headers: {
+      //    'Authorization': `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZmlyc3ROYW1lIjoiRnJheSIsImxhc3ROYW1lIjoiVGFwaWEiLCJlbWFpbCI6ImZyYXluaWxzb24yMDAzQGdtYWlsLmNvbSIsInVzZXIiOiJmcmF5IiwicGhvbmUiOiI5NTQxMiIsInJvbGUiOiJjb211biIsImlhdCI6MTY3NzQ2NTY5MCwiZXhwIjoxNjgwMDU3NjkwfQ.JV-v5jo_51h_rgmjlp6PrrGTV9NAOu9lzWMJnCXihJ0`
+      //  }
+      //}
+      
       console.log("Esto llega");
       console.log(input);
 
@@ -38,9 +38,11 @@ export const createService = (input) => {
         payload: result.data,
       });
     } catch (error) {
-      alert("Relleno correctamente los formularios");
-      throw new Error("Error en createService");
+      alert("Relleno correctamente los formularios")
+      throw new Error("Error en createService")
     }
+
+    
   };
 };
 
@@ -80,3 +82,37 @@ export const filterModel = (
     });
   };
 };
+// export const serviceFilter = (input) => {
+//   return async (dispatch) => {
+//     let result;
+//     if (input === "default_2") {
+//       result = await axios.get(`/service`);
+//     } else {
+//       result = await axios.get(`/service?page=1&page_size=10&job=${input}`);
+//     }
+//     return dispatch({
+//       type: "SERVICE_FILTER",
+//       payload: result.data.result,
+//     });
+//   };
+// };
+
+//**FILTER*********************************** */
+// export const filterByJobs = (payload) => {
+//   return {
+//     type: ActionTypes.FILTER_BY_JOBS,
+//     payload,
+//   };
+// };
+
+// export const serviceFilter = (input, page, size) => {
+//   return async (dispatch) => {
+//     const result = await axios.get(
+//       `/service?page=${page}&page_size=${size}&job=${input}`
+//     );
+//     return dispatch({
+//       type: ActionTypes.FILTER_BY_JOBS,
+//       payload: result.data.result,
+//     });
+//   };
+// };
