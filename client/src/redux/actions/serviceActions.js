@@ -82,37 +82,3 @@ export const filterModel = (
     });
   };
 };
-// export const serviceFilter = (input) => {
-//   return async (dispatch) => {
-//     let result;
-//     if (input === "default_2") {
-//       result = await axios.get(`/service`);
-//     } else {
-//       result = await axios.get(`/service?page=1&page_size=10&job=${input}`);
-//     }
-//     return dispatch({
-//       type: "SERVICE_FILTER",
-//       payload: result.data.result,
-//     });
-//   };
-// };
-
-//**FILTER*********************************** */
-// export const filterByJobs = (payload) => {
-//   return {
-//     type: ActionTypes.FILTER_BY_JOBS,
-//     payload,
-//   };
-// };
-
-// export const serviceFilter = (input, page, size) => {
-//   return async (dispatch) => {
-//     const result = await axios.get(
-//       `/service?page=${page}&page_size=${size}&job=${input}`
-//     );
-//     return dispatch({
-//       type: ActionTypes.FILTER_BY_JOBS,
-//       payload: result.data.result,
-//     });
-//   };
-// };
