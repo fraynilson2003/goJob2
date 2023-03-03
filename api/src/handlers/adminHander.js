@@ -59,7 +59,8 @@ const getInfoDashboard = async (req, res)=>{
     })
 
     //ultimo usuario
-    let ultimoUser = await User.findOne({
+    let ultimoUser = await User.findAll({
+      limit: 2,
       order: [['fecha_register', 'DESC']],
       attributes:["id", "firstName", "lastName", "user", "email", "phone", "role"]
 
