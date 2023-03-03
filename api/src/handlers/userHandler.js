@@ -20,6 +20,7 @@ const getAllUser = async (req, res) => {
 
   let name = req.query.name;
   let role = req.query.role;
+  let state = req.query.state
   let job = Number(req.query.job);
   let provincia = req.query.provincia;
   let ciudad = req.query.ciudad;
@@ -31,9 +32,12 @@ const getAllUser = async (req, res) => {
   let querys = {};
 
   //configuraciones para filtrado
-  let statementUser = {
-    state: true,
-  };
+  let statementUser = {};
+
+  if(state != undefined){
+    statementUser.state = state
+    querys.state = state
+  }
   if (name) {
     statementUser[Op.or] = {
       firstName: { [Op.iLike]: `%${name}%` },

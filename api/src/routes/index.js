@@ -7,6 +7,7 @@ const job = require('./job');
 const service = require('./service');
 const stripe = require("./stripe")
 const cloudinary = require("./cloudinary")
+const adminUser = require("./adminUser")
 
 
 /////
@@ -16,7 +17,7 @@ const app = Router();
 
 
 // configurar las routes(app)
-
+app.use("/admin", adminUser)
 app.use('/user', user)
 app.use('/job', job)
 app.use('/service', service)
