@@ -71,17 +71,19 @@ const getInfoDashboard = async (req, res)=>{
     let ultimoService = await Service.findOne({
       order: [['fecha_publicacion', 'DESC']],
       attributes: { exclude: ['UserId'] },
-      include:{
+      include:[
+        {
         model: User,
         as:"userId",
         attributes:["id", "firstName", "lastName", "user", "email", "phone", "role", "imagePerfil"],
-        include: {
+        },
+        {
           model: Job,
           through: { 
             attributes:[]
           }
         }
-      },
+      ],
     })
 
     //ultimo usuario
