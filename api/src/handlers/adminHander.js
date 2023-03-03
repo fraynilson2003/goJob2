@@ -18,7 +18,19 @@ const getInfoDashboard = async (req, res)=>{
     
     // Obtener el último día del mes actual
     const ultimoDiaDelMes = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    
+    /********** GANANCIAS TODO *********** */
+    const serviceTodo = await Service.findAll({
+      attributes: ["presupuesto"],
+      order: [["fecha_publicacion", "DESC", ]],
+      where: {state: "terminado"}
+    });
+    let preciosServicesAll = serviceTodo.map((ele)=>ele.presupuesto.trim())
+    let gananciasTodo = 0
+    preciosServicesAll.forEach(ele => {
+      gananciasTodo += Number(ele)
+    });
+
+    /********** ESTE MES************ */
     // Consulta Sequelize que filtra los servicios por la fecha de publicación del mes actual
     const servicesMes = await Service.findAll({
       order: [["fecha_publicacion", "DESC", ]],
@@ -28,6 +40,8 @@ const getInfoDashboard = async (req, res)=>{
         }
       },
     });
+
+
     let serviciosFinalizados = servicesMes.filter((ele)=> ele.state == "terminado")
     let preciosServices = serviciosFinalizados.map((ele)=>ele.presupuesto.trim())
     let gananciasEsteMes = 0
@@ -54,7 +68,7 @@ const getInfoDashboard = async (req, res)=>{
       include:{
         model: User,
         as:"userId",
-        attributes:["id", "firstName", "lastName", "user", "email", "phone", "role"]
+        attributes:["id", "firstName", "lastName", "user", "email", "phone", "role", "imagePerfil"]
       },
     })
 
@@ -62,7 +76,7 @@ const getInfoDashboard = async (req, res)=>{
     let ultimoUser = await User.findAll({
       limit: 2,
       order: [['fecha_register', 'DESC']],
-      attributes:["id", "firstName", "lastName", "user", "email", "phone", "role"]
+      attributes:["id", "firstName", "lastName", "user", "email", "phone", "role", "imagePerfil"]
 
     })
 
@@ -71,7 +85,8 @@ const getInfoDashboard = async (req, res)=>{
       status: "success",
       message: "Extraccion exitosa",
       userTotal: userCount,
-      serviciosEsteMes: servicesEsteMesCount,
+      serviciosGananciasTodo: gananciasTodo,
+      serviciosEsteMesCount: servicesEsteMesCount,
       gananciasEsteMes: gananciasEsteMes,
       ultimosPagos: ultimosPagos,
       ultimoService: ultimoService,
