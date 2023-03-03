@@ -39,12 +39,12 @@ const getInfoDashboard = async (req, res)=>{
           [Op.between]: [primerDiaDelMes, ultimoDiaDelMes],
         }
       },
-      include: {
+      include: [{
         model: Job,
         through: { 
           attributes:[]
         }
-      },
+      }]
     });
 
 
