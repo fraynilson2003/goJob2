@@ -74,7 +74,13 @@ const getInfoDashboard = async (req, res)=>{
       include:{
         model: User,
         as:"userId",
-        attributes:["id", "firstName", "lastName", "user", "email", "phone", "role", "imagePerfil"]
+        attributes:["id", "firstName", "lastName", "user", "email", "phone", "role", "imagePerfil"],
+        include: {
+          model: Job,
+          through: { 
+            attributes:[]
+          }
+        }
       },
     })
 
