@@ -16,8 +16,8 @@ async function createSession(priceId, idService) {
         "card", //el metodo por defecto pago con tarjeta se pueden añadir otros
       ],
       mode: "payment", // tipo de pago, como no es recurrente es payment
-      success_url: "http://localhost:3000/", // si el pago es exitoso se redirige aqui
-      cancel_url: "http://localhost:3001/fail", // si el pago es cancelado o fallo redirige aqui
+      success_url: "http://localhost:3005/", // si el pago es exitoso se redirige aqui
+      cancel_url: "http://localhost:3001/", // si el pago es cancelado o fallo redirige aqui
     });
 
     return session; // en sesion viene la url que da stripe para el formulario y se pueda realizar el pago
@@ -27,6 +27,10 @@ async function createSession(priceId, idService) {
   }
 
 }
+
+/************************************ */
+
+
 
 async function createProduct(name) {
   //name seria el nombre del usuario, username o ID, que creo el formato de pago
