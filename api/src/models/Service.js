@@ -33,6 +33,13 @@ const serviceModel = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      imageServiceUrl: {
+        type: DataTypes.STRING,
+        defaultValue: "sin foto"
+      },
+      imagePublicId: {
+        type: DataTypes.STRING,
+      },
       // stripepriceId:{
       //   type: DataTypes.STRING,
       //   //allowNull: false

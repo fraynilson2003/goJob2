@@ -213,9 +213,7 @@ const createUser = async (req, res) => {
 
 const uploadImg = async (req, res) => {
   let errors = false;
-
   let user = req.body.user;
-
   let newUser = {};
 
   console.log("Entra a post img");
@@ -457,7 +455,7 @@ const getFriends = async (req, res) => {
   }
 };
 //service
-const createServer = async (req, res) => {
+const createService = async (req, res) => {
   let newService = req.body;
   let idUser = req.user.id;
   try {
@@ -477,6 +475,43 @@ const createServer = async (req, res) => {
     return res.status(400).json({
       status: "error",
       message: error.message,
+    });
+  }
+};
+
+const putServiceImg = async (req, res) => {
+  req.params.id;
+  let errors = false;
+  let id = req.params.id;
+  let newService = {};
+
+  try {
+
+      const result = await uploadImage(req.files.image.tempFilePath);
+      if (result.error){
+        errors = true;
+        throw new Error("error en subir la imagen")
+      } // Si se produce un error al cargar la imagen, establecemos la variable de estado en verdadero
+      newService.imageServiceUrl = result.secure_url;
+      newService.imagePublicId = result.public_id;
+
+      await fs.unlink(req.files.image.tempFilePath); // borra el archivo despues de subirlo a cloudinary
+
+      //extramos el usuario
+      let updateImgUser = await Service.update(newService, {
+        where: { id: id },
+      });
+
+      //Si todo salio bien
+    return res.status(200).json({
+      status: "Imagen subida correctamente",
+      message: "success",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "error",
+      message: error.message,
+      error: errors,
     });
   }
 };
@@ -850,7 +885,8 @@ module.exports = {
   deleteJob,
   getFriends,
   getAllMyService,
-  createServer,
+  createService,
+  putServiceImg,
   actualizarService,
   deleteService,
   putUser,

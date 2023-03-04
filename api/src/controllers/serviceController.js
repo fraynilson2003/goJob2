@@ -110,8 +110,7 @@ const getServices = async (page, page_size, querys, statementService, statemente
     }
 
     const totalPages = Math.ceil(totalCount / page_size);
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    console.log(totalCount);
+
     //paginacion
     let paginado = paginacion(page, page_size, totalPages, totalCount, querys)
  

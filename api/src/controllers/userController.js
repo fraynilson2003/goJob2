@@ -9,11 +9,6 @@ const getDbUser = async (page, page_size, querys, statementUser, statementeJob, 
   const offset = (page - 1) * page_size;
 
   let verifyStatementeJob = Object.keys(statementeJob)
-
-  
-  console.log("-------------------------aaaaaaaaaa-------------");
-  console.log(stamentOrder.order);
-
   try{
     let result
     if(verifyStatementeJob.length){
