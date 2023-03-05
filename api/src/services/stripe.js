@@ -102,13 +102,22 @@ async function listPrices(producto_id) {
   return prices;
 }
 
-// const existingPrice = listPrices(producto_id).data.find(price => price.unit_amount === priceInCents);
+async function chargesSearhComplete(producto_id) {
 
-// if (existingPrice) {
+    // Recupera el PaymentIntent con el ID del PaymentIntent
+    payment_intent = stripe.PaymentIntent.retrieve(producto_id)
 
-// } else {
+    if (payment_intent.status == 'succeeded')
 
-// }
+    charge = stripe.Charge.retrieve(payment_intent.charges.data[0].id)
+    chargesObject = payment_intent.charges.data
+    price = stripe.Price.retrieve(charge.price)
+    product = stripe.Product.retrieve(price.product)
+
+    return console.log()
+
+  }
+
 
 module.exports = {
   createProduct,
