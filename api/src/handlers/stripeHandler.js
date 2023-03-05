@@ -126,7 +126,10 @@ const eventListenComplete = async(req, res) => {
       /* El paymentIntentSucceeded contiene la informacion de la compra, como el id del producto para poder actualizar la base de datos*/
       console.log("**************************************");
       console.log("Salio bien");
-      console.log(event);
+      console.log(paymentIntentSucceeded);
+      console.log("-----------------------------");
+      const metadata = paymentIntentSucceeded.metadata;
+      console.log(metadata);
       console.log("**************************************");
    
       return res.status(200).send(paymentIntentSucceeded)

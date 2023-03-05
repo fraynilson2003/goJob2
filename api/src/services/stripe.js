@@ -11,17 +11,19 @@ async function createSession(priceId, idProduct) {
         {
           price: priceId, //se requiere un priceId para la compra que esta linkeado con su producto
           quantity: 1, //siempre la cantidad es 1 porque solo compran 1 servicio
+          
         },
       ],
+      metadata: {
+        idProduct: idProduct
+      },
       payment_method_types: [
         "card", //el metodo por defecto pago con tarjeta se pueden añadir otros
       ],
       mode: "payment", // tipo de pago, como no es recurrente es payment
       success_url: `http://localhost:3005/?id=${idProduct}`, // si el pago es exitoso se redirige aqui
       cancel_url: "http://localhost:3001/", // si el pago es cancelado o fallo redirige aqui
-      metadata: {
-        idProduct: idProduct //agregamos el id del producto como metadata
-      }
+
     });
 
     return session; // en sesion viene la url que da stripe para el formulario y se pueda realizar el pago
