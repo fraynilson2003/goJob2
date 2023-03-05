@@ -101,9 +101,6 @@ const eventListenComplete = (req, res) => {
 
   const sig = req.headers["stripe-signature"];
   console.log("**************************************");
-  console.log(req.body);
-
-  let paymentIntent 
 
   let endpointSecret = "whsec_730037f56670d07815b2976d5585fb1585713d31185a0169345257f6f5908e58"
   let event
@@ -113,27 +110,30 @@ const eventListenComplete = (req, res) => {
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
-    console.log("44444444444444444444444444444444444");
-    console.log(`Webhook Error: ${err.message}`);
+    // console.log("44444444444444444444444444444444444");
+    // console.log(`Webhook Error: ${err.message}`);
     return res.status(409).send(`Webhook Error: ${err.message}`);
     
   }
-  console.log("siuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
-  console.log(event);
+  // console.log("siuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+  // console.log(event);
+  // console.log("siuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
 
-  // switch (event.type) {
-  //   case 'payment_intent.succeeded':
-  //     const paymentIntentSucceeded = event.data.object;
-  //     console.log("44444444444444444444444444444444444");
-  //     console.log("Salio bien");
-  //     return
-  //     break;
-  //   // ... handle other event types
-  //   default:
-  //     console.log("99999999999999999999999999999");
-  //     console.log(`Unhandled event type ${event.type}`);
-  //     return
-  // }
+
+  switch (event.type) {
+    case 'payment_intent.succeeded':
+      const paymentIntentSucceeded = event.data.object;
+      /* El paymentIntentSucceeded contiene la informacion de la compra, como el id del producto para poder actualizar la base de datos*/
+      console.log("**************************************");
+      console.log("Salio bien");
+      console.log("**************************************");
+
+      return res.status(200).send(paymentIntentSucceeded)
+      break;
+
+    default:
+      return res.status(405)
+  }
 
   return res.status(200).json({
     status: "siuuuuuuuuuuuu"
