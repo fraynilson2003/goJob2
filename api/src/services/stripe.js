@@ -1,4 +1,4 @@
-const stripe = require('stripe')('sk_test_AAyUlMphrjfBjDBQMINfJPbZ00fxbQSK3d'); // aqui ponemos el secretKey del api
+const stripe = require('stripe')("sk_test_51Mi6vjIgxmdnTsYwXJakCGGyqUOMXFJBjCP5jUDkXKce3wrcrbb4FzkfAilNUiCyo3dUT6Bxg57Nowhul3P47AX000HOfygzJw"); // aqui ponemos el secretKey del api
 //el apisecret es de prueba por eso dice sk_test se pueden hacer compras de prueba
 
 //la sesion es la instancia de pago 

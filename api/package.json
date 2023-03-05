@@ -24,6 +24,7 @@
     "nodemailer": "^6.9.1",
     "pg": "^8.9.0",
     "sequelize": "^6.28.0",
+    "sinatra": "^0.0.5",
     "stripe": "^11.11.0"
   },
   "devDependencies": {

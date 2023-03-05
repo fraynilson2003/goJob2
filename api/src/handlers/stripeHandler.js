@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -94,45 +96,85 @@ const allPriceProductHandler = async (req, res) => {
   }
 };
 
-const eventListenComplete = async (req, res) => {
+const eventListenComplete = (req, res) => {
+ 
+
   const sig = req.headers["stripe-signature"];
+  console.log("**************************************");
+  console.log(req.body);
+
   let paymentIntent 
 
-  console.log(sig)
-  try {
+  let endpointSecret = "whsec_730037f56670d07815b2976d5585fb1585713d31185a0169345257f6f5908e58"
+  let event
 
-    // const event = stripe.webhooks.constructEvent(
-    //   req.rawBody,
-    //   sig,
-    //   "whsec_52f726ff93740cdc21dbd6dc20cd4b447eacc690ed34109ce4372b15f8ff44ec"
-    // );
+
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.log("44444444444444444444444444444444444");
+    console.log(`Webhook Error: ${err.message}`);
+    return res.status(409).send(`Webhook Error: ${err.message}`);
+    
+  }
+  console.log("siuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+  console.log(event);
+
+  // switch (event.type) {
+  //   case 'payment_intent.succeeded':
+  //     const paymentIntentSucceeded = event.data.object;
+  //     console.log("44444444444444444444444444444444444");
+  //     console.log("Salio bien");
+  //     return
+  //     break;
+  //   // ... handle other event types
+  //   default:
+  //     console.log("99999999999999999999999999999");
+  //     console.log(`Unhandled event type ${event.type}`);
+  //     return
+  // }
+
+  return res.status(200).json({
+    status: "siuuuuuuuuuuuu"
+  })
+
+
+
+  // try {
+
+  //   event = stripe.webhooks.constructEvent(
+  //     req.rawBody,
+  //     sig,
+  //     endpointSecret
+  //   );
 
     
-    // if (event.type === "checkout.session.completed") {
-    //   // Actualiza el pedido en tu base de datos y redirige al usuario a successUrl
-    //   const session = event.data.object;
-    //    paymentIntent = await stripe.paymentIntents.retrieve(
-    //     session.payment_intent
-    //   );
+  //   // if (event.type === "checkout.session.completed") {
+  //   //   // Actualiza el pedido en tu base de datos y redirige al usuario a successUrl
+  //   //   const session = event.data.object;
+  //   //    paymentIntent = await stripe.paymentIntents.retrieve(
+  //   //     session.payment_intent
+  //   //   );
       
-      // Verifica que el pago fue exitoso antes de actualizar el estado del pedido
-      // if (paymentIntent.status === "succeeded") {
-      //   // Actualiza el estado del pedido en tu base de datos
-      //   console.log("funciona")
-      //   // y redirige al usuario a la página de éxito
-      //   res.redirect("https://localhost:3001");
-      // } else {
-      //   // Si el pago no fue exitoso, no actualices el estado del pedido
-      //   // y devuelve una respuesta exitosa al webhook de Stripe
-      //   res.sendStatus(200);
-      // }
+  //     // Verifica que el pago fue exitoso antes de actualizar el estado del pedido
+  //     // if (paymentIntent.status === "succeeded") {
+  //     //   // Actualiza el estado del pedido en tu base de datos
+  //     //   console.log("funciona")
+  //     //   // y redirige al usuario a la página de éxito
+  //     //   res.redirect("https://localhost:3001");
+  //     // } else {
+  //     //   // Si el pago no fue exitoso, no actualices el estado del pedido
+  //     //   // y devuelve una respuesta exitosa al webhook de Stripe
+  //     //   res.sendStatus(200);
+  //     // }
   
-    // }
-  } catch (err) {
-    console.log(paymentIntent);
-    // res.sendStatus();
-    res.status(408).json({error:err.message})
-  }
+  //   // }
+  // } catch (err) {
+  //   console.log(paymentIntent);
+  //   // res.sendStatus();
+  //   res.status(408).json({error:err.message})
+  // }
 };
 
 module.exports = {

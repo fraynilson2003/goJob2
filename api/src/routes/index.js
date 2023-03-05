@@ -1,4 +1,4 @@
-const {Router} = require ('express');
+const {Router, raw} = require ('express');
 
 ///Aca van las rutas que se conectan con el index
 
@@ -20,7 +20,9 @@ app.use("/admin", adminUser)
 app.use('/user', user)
 app.use('/job', job)
 app.use('/service', service)
-app.use("/stripe",stripe)
+//app.use("/stripe", raw({type: 'application/json'}),stripe)
+app.use("/stripeG", stripe)
+
 app.use("/cloudinary",cloudinary)
 
 

@@ -8,13 +8,14 @@ const {createCheckoutHandler,
         delProductHandler,
         allProductHandler,
         allPriceProductHandler,
-        eventListenComplete} = require("../handlers/stripeHandler")
+        eventListenComplete} = require("../handlers/stripeHandler");
+const { stripeRawBody } = require('../middlewares/stripe');
 
 
 //estas rutas solo son para ver como funciona el api, las rutas funcionales vienen dentro de createservice y createjob
 
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: true }));
+// router.use(bodyParser.json());
+// router.use(bodyParser.urlencoded({ extended: true }));
 
 router.post('/webhook', eventListenComplete );
 
