@@ -17,7 +17,7 @@ async function createSession(priceId, idProduct) {
         "card", //el metodo por defecto pago con tarjeta se pueden añadir otros
       ],
       mode: "payment", // tipo de pago, como no es recurrente es payment
-      success_url: "http://localhost:3005/", // si el pago es exitoso se redirige aqui
+      success_url: `http://localhost:3005/?id=${idProduct}`, // si el pago es exitoso se redirige aqui
       cancel_url: "http://localhost:3001/", // si el pago es cancelado o fallo redirige aqui
       metadata: {
         idProduct: idProduct //agregamos el id del producto como metadata

@@ -96,7 +96,7 @@ const allPriceProductHandler = async (req, res) => {
   }
 };
 
-const eventListenComplete = (req, res) => {
+const eventListenComplete = async(req, res) => {
  
 
   const sig = req.headers["stripe-signature"];
@@ -128,7 +128,7 @@ const eventListenComplete = (req, res) => {
       console.log("Salio bien");
       console.log(event);
       console.log("**************************************");
-
+   
       return res.status(200).send(paymentIntentSucceeded)
       break;
 
@@ -140,42 +140,6 @@ const eventListenComplete = (req, res) => {
     status: "siuuuuuuuuuuuu"
   })
 
-
-
-  // try {
-
-  //   event = stripe.webhooks.constructEvent(
-  //     req.rawBody,
-  //     sig,
-  //     endpointSecret
-  //   );
-
-    
-  //   // if (event.type === "checkout.session.completed") {
-  //   //   // Actualiza el pedido en tu base de datos y redirige al usuario a successUrl
-  //   //   const session = event.data.object;
-  //   //    paymentIntent = await stripe.paymentIntents.retrieve(
-  //   //     session.payment_intent
-  //   //   );
-      
-  //     // Verifica que el pago fue exitoso antes de actualizar el estado del pedido
-  //     // if (paymentIntent.status === "succeeded") {
-  //     //   // Actualiza el estado del pedido en tu base de datos
-  //     //   console.log("funciona")
-  //     //   // y redirige al usuario a la página de éxito
-  //     //   res.redirect("https://localhost:3001");
-  //     // } else {
-  //     //   // Si el pago no fue exitoso, no actualices el estado del pedido
-  //     //   // y devuelve una respuesta exitosa al webhook de Stripe
-  //     //   res.sendStatus(200);
-  //     // }
-  
-  //   // }
-  // } catch (err) {
-  //   console.log(paymentIntent);
-  //   // res.sendStatus();
-  //   res.status(408).json({error:err.message})
-  // }
 };
 
 module.exports = {
