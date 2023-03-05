@@ -39,6 +39,7 @@ const userModel = (sequelize) => {
     },
     imagePerfil: {
         type: DataTypes.STRING,
+        defaultValue: "sin foto",
     },
     imageurl: {
         type: DataTypes.STRING,

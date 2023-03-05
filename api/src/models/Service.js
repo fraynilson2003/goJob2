@@ -40,10 +40,6 @@ const serviceModel = (sequelize) => {
       imagePublicId: {
         type: DataTypes.STRING,
       },
-      // stripepriceId:{
-      //   type: DataTypes.STRING,
-      //   //allowNull: false
-      // },
       score: {
         type: DataTypes.INTEGER,
         default: 0,
@@ -69,6 +65,17 @@ const serviceModel = (sequelize) => {
       },
       direccion: {
           type: DataTypes.STRING,
+      },
+
+      //stripe
+      stripeProductId:{
+        type: DataTypes.TEXT,
+      },
+      stripeSesionId:{
+        type: DataTypes.TEXT,
+      },
+      stripeSesionURL:{
+        type: DataTypes.TEXT,
       },
 
     },

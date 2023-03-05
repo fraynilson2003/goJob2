@@ -50,7 +50,10 @@ router.put("/service/img/:id", auth, userHandlers.putServiceImg)
 router.put("/service/:idService", auth, userHandlers.actualizarService)//
 
 router.put("/service/calificar/:id", auth, userHandlers.calificarService)//
+router.put("/service/pagar/review", auth, userHandlers.pagarProducto)//
+
 router.put("/update", auth, userHandlers.putUser)
+
 
 
 /******* DELETE ******* */

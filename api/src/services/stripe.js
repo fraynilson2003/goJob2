@@ -1,8 +1,9 @@
-const stripe = require("stripe")("sk_test_AAyUlMphrjfBjDBQMINfJPbZ00fxbQSK3d"); // aqui ponemos el secretKey del api
+require('dotenv').config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 //el apisecret es de prueba por eso dice sk_test se pueden hacer compras de prueba
 
 //la sesion es la instancia de pago
-async function createSession(priceId, idService) {
+async function createSession(priceId, idProduct) {
   // se crea una sesion por cada llamada a la funcion
   try {
     const session = await stripe.checkout.sessions.create({
@@ -10,14 +11,19 @@ async function createSession(priceId, idService) {
         {
           price: priceId, //se requiere un priceId para la compra que esta linkeado con su producto
           quantity: 1, //siempre la cantidad es 1 porque solo compran 1 servicio
+          
         },
       ],
+      metadata: {
+        idProduct: idProduct
+      },
       payment_method_types: [
         "card", //el metodo por defecto pago con tarjeta se pueden añadir otros
       ],
       mode: "payment", // tipo de pago, como no es recurrente es payment
-      success_url: "http://localhost:3005/", // si el pago es exitoso se redirige aqui
+      success_url: `http://localhost:3005/?id=${idProduct}`, // si el pago es exitoso se redirige aqui
       cancel_url: "http://localhost:3001/", // si el pago es cancelado o fallo redirige aqui
+
     });
 
     return session; // en sesion viene la url que da stripe para el formulario y se pueda realizar el pago
@@ -38,9 +44,12 @@ async function createProduct(name) {
   try {
     const idProduct = await stripe.products.create({
       name: name,
+      metadata: {
+        idProduct: "tuki"
+      }
     });
 
-    return idProduct.id; //nos retorna el objeto completo donde viene el Id del producto para despues añadir precios
+    return idProduct; //nos retorna el objeto completo donde viene el Id del producto para despues añadir precios
   } catch (error) {
     //console.log(error.message);
     throw new Error(error.message) ;
@@ -58,7 +67,7 @@ async function createPrice(newPrice, idProduct) {
       product: idProduct, // recibimos el Id del producto al cual le asignaremos un nuevo precio
     });
 
-    return idPrice.id;
+    return idPrice;
   } catch (error) {
     console.log(error.message);
     throw new Error(error.message) ;
@@ -105,7 +114,6 @@ async function listPrices(producto_id) {
 // }
 
 module.exports = {
-  stripe,
   createProduct,
   createPrice,
   createSession,

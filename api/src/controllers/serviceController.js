@@ -177,9 +177,33 @@ const paginacion = (page, page_size, totalPages, totalCount, querys)=>{
   }
 }
 
+const pagarService = async(idSession, idProduct)=>{
+  try {
+    //actualizamos el servicio ya pagado
+    let servicePagado = await Service.update(
+      {
+        state: "terminado",
+      },
+      {
+        where: {
+          stripeSesionId: idSession, 
+          stripeProductId: idProduct
+        }
+      }
+    )
+    console.log("Pago registrado exitosamente");
+    return true
+
+  } catch (error) {
+    throw new Error (error.message)
+
+  }
+
+}
 
 
 module.exports = {
   getServices,
-  paginacion
+  paginacion,
+  pagarService
 }

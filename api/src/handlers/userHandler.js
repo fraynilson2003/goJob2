@@ -741,13 +741,12 @@ const deletePostuleService = async (req, res) => {
 };
 
 const elegirTrabajador = async (req, res) => {
-  console.log("***************** BBBBBBBBB *****************");  
-
   let idUser = req.user.id;
 
   let idTrabajador = Number(req.body.trabajador);
   let idService = Number(req.body.service);
 
+  let actStateSer
   try {
     if (!idTrabajador || !idService) throw Error("Mising data");
     //sacamos al user Trabajador para el mensaje
@@ -766,38 +765,38 @@ const elegirTrabajador = async (req, res) => {
     //eliminamos al trabajdor de la lista postulantes
     let deletePostu = await service.removePostulante(idTrabajador);
 
+    //enviamos email a usuario contratado
+
+    let nameTraba = `${userTrabajador.firstName} ${userTrabajador.lastName}`
+    let nameContratista = `${contratista.firstName} ${contratista.lastName}`
+    notifyTeContrataron(nameTraba, userTrabajador.email, service.tittle, nameContratista, contratista.email)
+
+
+    /********************************************************* */
+    //CREACION DE PRODUCTO STRIPE
+    let stripePrecio = String(service.presupuesto * 100)
+    let stripeProductoName = service.tittle
+    let stripeIdProduct = await createProduct(stripeProductoName)
+
+
     //actualizamos el state del service
-    let actStateSer = await Service.update(
+    actStateSer = await Service.update(
       {
         state: "proceso",
+        stripeProductId: stripeIdProduct.id 
       },
       {
         where: { id: idService, UserId: idUser },
       }
     );
 
-    //CREACION DE PRODUCTO STRIPE
-    let stripePrecio = String(service.presupuesto * 100)
-    let stripeProductoName = service.tittle
-    let stripeIdProduct = await createProduct(stripeProductoName)
-    let stripeIdPrecio = await createPrice(stripePrecio, stripeIdProduct )
-
-    let stripeCheckout = await createSession(stripeIdPrecio)
-
-    console.log("***************** UUUUUU *****************"); 
-    console.log(typeof stripeCheckout); 
-    console.log(stripeCheckout);
-
-    //enviamos email a usuario contratado
-    let nameTraba = `${userTrabajador.firstName} ${userTrabajador.lastName}`
-    let nameContratista = `${contratista.firstName} ${contratista.lastName}`
-    notifyTeContrataron(nameTraba, userTrabajador.email, service.tittle, nameContratista, contratista.email)
 
     //Si todo salio bien
     return res.status(200).json({
       status: "success",
       message: "Se agrego trabjador al servicio exitosamente",
-      stripeCheckout: stripeCheckout.url
+      actStateSer: actStateSer,
+      stripeIdProduct: stripeIdProduct.id
     });
   } catch (error) {
     return res.status(400).json({
@@ -807,6 +806,51 @@ const elegirTrabajador = async (req, res) => {
   }
 };
 
+const pagarProducto = async(req, res)=>{
+  let idProduct = Number(req.body.idProduct)
+
+
+  try {
+    let product = await Service.findOne({
+      where: {id: idProduct },
+      attributes: ["tittle", "stripeProductId", "presupuesto", ]
+    })
+
+    //Stripe
+    let stripeIdPrecio = await createPrice((product.presupuesto * 100), product.stripeProductId)
+    let stripeCheckout = await createSession(stripeIdPrecio.id, product.stripeProductId)
+
+
+    //actualizamos el valor para pago
+    let actParaPago = await Service.update(
+      {
+        stripeSesionId: stripeCheckout.id,
+        stripeSesionURL: stripeCheckout.url
+      },
+      {
+        where: {id: idProduct },
+      }
+    )
+
+    return res.status(201).json({
+      status: "Sesion success",
+      message: "Sesion de pago abierta correctamente",
+      tittle: product.tittle,
+      stripeSesionId: stripeCheckout.id,
+      stripeSesionURL: stripeCheckout.url,
+
+    })
+
+  } catch (error) {
+    return res.status(408).json({
+      status: "error",
+      message: error.message
+
+
+    })
+  }
+}
+
 const calificarService = async (req, res) => {
   let idUser = req.user.id;
   let idService = Number(req.params.idService);
@@ -814,9 +858,7 @@ const calificarService = async (req, res) => {
   let review = req.body.review;
 
   try {
-    let stamentUpdate = {
-      state: "terminado",
-    };
+    let stamentUpdate = {};
     if (scoreService) stamentUpdate.score = Number(scoreService);
     if (review) stamentUpdate.review = review;
 
@@ -909,5 +951,6 @@ module.exports = {
   postularService,
   deletePostuleService,
   elegirTrabajador,
+  pagarProducto,
   calificarService,
 };

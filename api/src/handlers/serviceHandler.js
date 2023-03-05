@@ -99,7 +99,7 @@ const getIdService = async (req, res) => {
         {
           model: User,
           as:"userId",
-          attributes:["id", "firstName", "lastName", "user", "email", "phone"]
+          attributes:["id", "firstName", "lastName", "user", "email", "phone", "imagePerfil"]
 
         },
         {
