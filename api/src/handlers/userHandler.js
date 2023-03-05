@@ -12,7 +12,8 @@ const {
 } = require("../controllers/userController");
 const { Op, STRING } = require("sequelize");
 const { fechaActual } = require("../helpers/fechaActual");
-const { createToken } = require("../services/jwt")
+const { createToken } = require("../services/jwt");
+const { createProduct, createPrice, createSession } = require("../services/stripe");
 
 const getAllUser = async (req, res) => {
   let page = Number(req.query.page || 1);
@@ -777,13 +778,13 @@ const elegirTrabajador = async (req, res) => {
     let stripePrecio = String(service.presupuesto * 100)
     let stripeProductoName = service.tittle
     let stripeIdProduct = await createProduct(stripeProductoName)
-    let stripeIdPrecio = await createPrice(stripePrecio, stripeIdProduct )
+    let stripeIdPrecio = await createPrice(stripePrecio, stripeIdProduct.id )
 
-    let stripeCheckout = await createSession(stripeIdPrecio)
+    let stripeCheckout = await createSession(stripeIdPrecio.id, stripeIdProduct.id)
 
-    console.log("***************** UUUUUU *****************"); 
-    console.log(typeof stripeCheckout); 
-    console.log(stripeCheckout);
+    // console.log("***************** UUUUUU *****************"); 
+    // console.log(typeof stripeCheckout); 
+    // console.log(stripeCheckout);
     /********************************************************* */
 
     //enviamos email a usuario contratado
@@ -795,6 +796,9 @@ const elegirTrabajador = async (req, res) => {
     return res.status(200).json({
       status: "success",
       message: "Se agrego trabjador al servicio exitosamente",
+      stripeIdProduct,
+      stripeIdPrecio,
+      stripeCheckout
     });
   } catch (error) {
     return res.status(400).json({
