@@ -77,13 +77,6 @@ async function listPrices(producto_id){ //aqui buscamos todos los precios de un 
 }
 
 
-// const existingPrice = listPrices(producto_id).data.find(price => price.unit_amount === priceInCents);
-
-// if (existingPrice) {
-  
-// } else {
- 
-// }
 
 module.exports={
     stripe,
