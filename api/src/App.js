@@ -15,7 +15,7 @@ app.use(morgan('dev'));
 
 
 //convertir a json
-app.use(express.json())
+// app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(fileupload({
     useTempFiles: true,

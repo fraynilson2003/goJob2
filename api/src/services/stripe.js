@@ -76,7 +76,12 @@ async function listPrices(producto_id){ //aqui buscamos todos los precios de un 
       return prices
 }
 
+function webHook(payload,sig,endpointSecret ){ //aqui buscamos todos los precios de un producto
 
+    const event =  stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+
+      return event
+}
 
 module.exports={
     stripe,
@@ -86,7 +91,8 @@ module.exports={
     getProductById,
     deleteProduct,
     listProducts,
-    listPrices
+    webHook,
+    listPrices,
     
 }
 

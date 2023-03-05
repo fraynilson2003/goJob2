@@ -1,4 +1,5 @@
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+// require('dotenv').config();
+const stripe = require("stripe")("sk_test_AAyUlMphrjfBjDBQMINfJPbZ00fxbQSK3d");
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -11,6 +12,7 @@ const {
   deleteProduct,
   listProducts,
   listPrices,
+  webHook
 } = require("../services/stripe");
 
 const createCheckoutHandler = async (req, res) => {
@@ -94,32 +96,26 @@ const allPriceProductHandler = async (req, res) => {
   }
 };
 
-const eventListenComplete = async (request, response) => {
-  
+const webHookHandler = async (request, response) => {
+  const sig = request.headers['stripe-signature'];
+  const payload = request.body;
   const endpointSecret = "whsec_52f726ff93740cdc21dbd6dc20cd4b447eacc690ed34109ce4372b15f8ff44ec";
- 
-    const sig = request.headers['stripe-signature'];
-  
-    let event;
-  
-    try {
-      event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
-    } catch (err) {
-      response.status(400).send(`Webhook Error: ${err.message}`);
-      return;
-    }
-  
-    // Handle the event
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntentSucceeded = event.data.object;
-        // Then define and call a function to handle the event payment_intent.succeeded
-        break;
-      // ... handle other event types
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
-  
+
+  let event;
+
+  try {
+    event = webHook(payload, sig, endpointSecret);
+  } catch (error) {
+    console.log(error.message)
+    response.status(400).json({success:false});
+    return;
+  }
+
+  console.log(event.type)
+  console.log(event.data.object)
+  // console.log(event.object.id)
+
+  response.status(200).json({success:true});
     
 };
 
@@ -131,5 +127,5 @@ module.exports = {
   delProductHandler,
   allProductHandler,
   allPriceProductHandler,
-  eventListenComplete
+  webHookHandler
 };

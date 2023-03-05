@@ -15,6 +15,7 @@ const app = Router();
 
 
 
+
 // configurar las routes(app)
 app.use("/admin", adminUser)
 app.use('/user', user)
@@ -22,7 +23,6 @@ app.use('/job', job)
 app.use('/service', service)
 app.use("/stripe",stripe)
 app.use("/cloudinary",cloudinary)
-
 
 
 module.exports = app;
