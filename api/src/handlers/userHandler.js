@@ -772,6 +772,19 @@ const elegirTrabajador = async (req, res) => {
         where: { id: idService, UserId: idUser },
       }
     );
+    /********************************************************* */
+    //CREACION DE PRODUCTO STRIPE
+    let stripePrecio = String(service.presupuesto * 100)
+    let stripeProductoName = service.tittle
+    let stripeIdProduct = await createProduct(stripeProductoName)
+    let stripeIdPrecio = await createPrice(stripePrecio, stripeIdProduct )
+
+    let stripeCheckout = await createSession(stripeIdPrecio)
+
+    console.log("***************** UUUUUU *****************"); 
+    console.log(typeof stripeCheckout); 
+    console.log(stripeCheckout);
+    /********************************************************* */
 
     //enviamos email a usuario contratado
     let nameTraba = `${userTrabajador.firstName} ${userTrabajador.lastName}`
