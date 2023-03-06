@@ -13,7 +13,7 @@ const {
 const { Op, STRING } = require("sequelize");
 const { fechaActual } = require("../helpers/fechaActual");
 const { createToken } = require("../services/jwt");
-const { createProduct, createPrice, createSession } = require("../services/stripe");
+const { createProduct, createPrice, createSession, getProductById } = require("../services/stripe");
 
 const getAllUser = async (req, res) => {
   let page = Number(req.query.page || 1);
@@ -766,6 +766,9 @@ const elegirTrabajador = async (req, res) => {
     let deletePostu = await service.removePostulante(idTrabajador);
 
     //enviamos email a usuario contratado
+    let typeProfile
+    if(contratista.role = "comun") typeProfile = "c"
+    if(contratista.role = "professional") typeProfile = "p"
 
     let nameTraba = `${userTrabajador.firstName} ${userTrabajador.lastName}`
     let nameContratista = `${contratista.firstName} ${contratista.lastName}`
@@ -774,16 +777,15 @@ const elegirTrabajador = async (req, res) => {
 
     /********************************************************* */
     //CREACION DE PRODUCTO STRIPE
-    let stripePrecio = String(service.presupuesto * 100)
     let stripeProductoName = service.tittle
-    let stripeIdProduct = await createProduct(stripeProductoName)
+    let stripeIdProduct = await createProduct(stripeProductoName, contratista.id, userTrabajador.id, service.id, typeProfile )
 
 
     //actualizamos el state del service
     actStateSer = await Service.update(
       {
         state: "proceso",
-        stripeProductId: stripeIdProduct.id 
+        stripeProductId: stripeIdProduct.id,
       },
       {
         where: { id: idService, UserId: idUser },
@@ -796,7 +798,9 @@ const elegirTrabajador = async (req, res) => {
       status: "success",
       message: "Se agrego trabjador al servicio exitosamente",
       actStateSer: actStateSer,
-      stripeIdProduct: stripeIdProduct.id
+      stripeIdProduct: stripeIdProduct.id,
+      stripeIdProduct: stripeIdProduct
+
     });
   } catch (error) {
     return res.status(400).json({
@@ -818,7 +822,15 @@ const pagarProducto = async(req, res)=>{
 
     //Stripe
     let stripeIdPrecio = await createPrice((product.presupuesto * 100), product.stripeProductId)
-    let stripeCheckout = await createSession(stripeIdPrecio.id, product.stripeProductId)
+
+    let detailProduct = await getProductById(product.stripeProductId)
+
+    console.log("***********************");
+    console.log(typeof detailProduct);
+    console.log(detailProduct);
+    
+
+    let stripeCheckout = await createSession(stripeIdPrecio.id, product.stripeProductId, detailProduct.metadata)
 
 
     //actualizamos el valor para pago
@@ -838,6 +850,10 @@ const pagarProducto = async(req, res)=>{
       tittle: product.tittle,
       stripeSesionId: stripeCheckout.id,
       stripeSesionURL: stripeCheckout.url,
+      metadata: stripeCheckout.metadata,
+      success: stripeCheckout.success_url,
+      cancel: stripeCheckout.cancel_url
+
 
     })
 
@@ -853,9 +869,11 @@ const pagarProducto = async(req, res)=>{
 
 const calificarService = async (req, res) => {
   let idUser = req.user.id;
-  let idService = Number(req.params.idService);
+  let idService = req.params.idService;
   let scoreService = req.body.score;
   let review = req.body.review;
+
+  console.log(idService);
 
   try {
     let stamentUpdate = {};
@@ -864,16 +882,16 @@ const calificarService = async (req, res) => {
 
     //actualizamos el state del service
     let actStateSer = await Service.update(stamentUpdate, {
-      where: { id: idService, UserId: idUser },
+      where: { stripeProductId: idService, UserId: idUser },
     });
 
     //eliminamos los postulantes
-    let deleteAllPost = await Service.findOne({where: {id: idService}})
-    deleteAllPost.setPostulantes(null)
+    // let deleteAllPost = await Service.findOne({where: {id: idService}})
+    // deleteAllPost.setPostulantes(null)
 
     //extraemos la informacion del servicio para el rating
     let service = await Service.findOne({
-      where: { id: idService },
+      where: { stripeProductId: idService },
       include: {
         model: User,
         as: "trabajadorId",
@@ -883,6 +901,10 @@ const calificarService = async (req, res) => {
         },
       },
     });
+
+    console.log(service);
+    //eliminamos los postulantes
+    await service.setPostulantes([])
 
     //guardamos en el trabajador su nuevo rating
     if (scoreService) {
@@ -926,6 +948,7 @@ const calificarService = async (req, res) => {
     return res.status(400).json({
       status: "error",
       message: error.message,
+      error
     });
   }
 };

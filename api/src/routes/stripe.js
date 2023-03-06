@@ -7,9 +7,10 @@ const {createCheckoutHandler,
         productByIdHandler,
         delProductHandler,
         allProductHandler,
-        allPriceProductHandler,
-        eventListenComplete} = require("../handlers/stripeHandler");
+        allPriceProductHandler
+        } = require("../handlers/stripeHandler");
 const { stripeRawBody } = require('../middlewares/stripe');
+const { eventListenComplete } = require('../services/stripe');
 
 
 //estas rutas solo son para ver como funciona el api, las rutas funcionales vienen dentro de createservice y createjob

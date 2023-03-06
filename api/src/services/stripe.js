@@ -1,9 +1,13 @@
 require('dotenv').config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const {ENDPOINT_SECRET, FRONT_BASE_URL} = process.env
 //el apisecret es de prueba por eso dice sk_test se pueden hacer compras de prueba
 
+
+
+
 //la sesion es la instancia de pago
-async function createSession(priceId, idProduct) {
+async function createSession(priceId, idProduct, product) {
   // se crea una sesion por cada llamada a la funcion
   try {
     const session = await stripe.checkout.sessions.create({
@@ -15,14 +19,18 @@ async function createSession(priceId, idProduct) {
         },
       ],
       metadata: {
-        idProduct: idProduct
+        idProduct: idProduct,
+        ...product
       },
       payment_method_types: [
         "card", //el metodo por defecto pago con tarjeta se pueden añadir otros
       ],
       mode: "payment", // tipo de pago, como no es recurrente es payment
-      success_url: `http://localhost:3005/?id=${idProduct}`, // si el pago es exitoso se redirige aqui
-      cancel_url: "http://localhost:3001/", // si el pago es cancelado o fallo redirige aqui
+
+      success_url: `${FRONT_BASE_URL}stripe/${product.typeProfile}/${product.idContratista}/success/${idProduct}`, // si el pago es exitoso se redirige aqui
+      cancel_url: `${FRONT_BASE_URL}stripe/${product.typeProfile}/${product.idContratista}/success/${idProduct}`, // si el pago es cancelado o fallo redirige aqui
+
+      //cancel_url: `${FRONT_BASE_URL}stripe/${product.typeProfile}/${product.idContratista}/fail`, // si el pago es cancelado o fallo redirige aqui
 
     });
 
@@ -34,18 +42,68 @@ async function createSession(priceId, idProduct) {
 
 }
 
-/************************************ */
+/********** LISTEN PAGAR ********** */
+const eventListenComplete = async(req, res) => {
+
+  const sig = req.headers["stripe-signature"];
+
+  let event
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, ENDPOINT_SECRET);
+  } catch (err) {
+    return res.status(409).send(`Webhook Error: ${err.message}`);
+    
+  }
+
+  try {
+    switch (event.type) {
+      case 'payment_intent.succeeded':
+        const paymentIntentSucceeded = event.data.object;
+        /* El paymentIntentSucceeded contiene la informacion de la compra, como el id del producto para poder actualizar la base de datos*/
+      return res.status(200).send(paymentIntentSucceeded)
+  
+  
+      case "checkout.session.completed":
+        const completed = event.data.object;
+        let idSession = completed.id
+        let {idProduct} = completed.metadata
+   
+        console.log("**************************************");
+        console.log(idSession);
+        console.log(idProduct);
+        console.log("**************************************");
+
+        let result = await pagarService(idSession, idProduct)
+        
+
+  
+      return res.status(201).send(completed)
+  
+      default:
+        return res.status(405)
+    }
+  } catch (error) {
+    return res.status(407)
+
+  }
+ 
 
 
+};
 
-async function createProduct(name) {
+
+async function createProduct(name, idContratista, idTrabajador, idService, typeProfile) {
   //name seria el nombre del usuario, username o ID, que creo el formato de pago
   //creas servicio como Albañileria, Plomeria pero es especifico del usuario
   try {
     const idProduct = await stripe.products.create({
       name: name,
       metadata: {
-        idProduct: "tuki"
+        idContratista: idContratista,
+        idTrabajador: idTrabajador,
+        idService: idService,
+        typeProfile: typeProfile
       }
     });
 
@@ -76,9 +134,16 @@ async function createPrice(newPrice, idProduct) {
 
 async function getProductById(idProduct) {
   // obtenemos la informacion de un productoServicio
+try {
   const product = await stripe.products.retrieve(idProduct);
 
   return product; //aqui podemos ver los ID de los precios relacionados con ese producto
+
+} catch (error) {
+  throw new Error(error.message)
+}
+
+
 }
 
 async function deleteProduct(idProduct) {
@@ -121,4 +186,5 @@ module.exports = {
   deleteProduct,
   listProducts,
   listPrices,
+  eventListenComplete
 };
