@@ -132,6 +132,7 @@ const paginacion = (page, page_size, totalPages, totalCount, querys)=>{
   return {
     nextPage,
     previousPage,
+    actualPage: page,
     totalPages
   }
   
