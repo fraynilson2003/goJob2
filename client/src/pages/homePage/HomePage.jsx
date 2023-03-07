@@ -1,4 +1,3 @@
-//eslint-disable react-hooks/rules-of-hooks
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../../components/Footer/Footer";
@@ -7,62 +6,24 @@ import FormHomePage from "../../containers/forms/formHomePage/FormHomePage";
 import Reviews from "../../components/Reviews/Reviews";
 import NavBarPortada from "../../components/navBar/navBarPortada/NavBarPortada";
 import { useAuth0 } from "@auth0/auth0-react";
-import { createAndLogin, createUser2, getUserAuth0Id } from "../../redux/actions/userActions";
+import { createAndLogin, createUser2 } from "../../redux/actions/userActions";
 import axios from "axios";
 
 export default function HomePage() {
-  const { isAuthenticated, user, isLoading } = useAuth0();
-  const dispatch = useDispatch();
-
-  if (isLoading) {
-    return (
-      <div class="flex items-center justify-center content-center">
-        <div
-          class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-          role="status"
-        >
-          <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-            Loading...
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-
-  const createUser = () => {
-    const { given_name, nickname, family_name, email, picture } = user;
-    let newUser = {
-        firstName: given_name || 'sin nombre',
-        lastName:family_name || 'sin apellido',
-        email: email,
-        user: nickname,
-        imagePerfil: picture || "sin foto",
-        jobs: [1],
-        role: "professional",
-        horario: "mañana"
-
-    }
-    dispatch(createAndLogin(newUser))
-  };
-  
-  if(isAuthenticated){
-    createUser()
-  }
-
+  //const { isAuthenticated, user, isLoading } = useAuth0();
 
   return (
     <>
-      <div class="inset-0 bg-gray-900 absolute bg-opacity-40 z-10"></div>
-      <div class=" h-screen bg-no-repeat bg-center bg-cover  bg-landingBackground">
-        <div class="p-1.5 sticky top-0 z-50 bg-white ">
+      <div className="inset-0 bg-gray-900 absolute bg-opacity-40 z-10"></div>
+      <div className=" h-screen bg-no-repeat bg-center bg-cover  bg-landingBackground">
+        <div className="sticky top-0 z-50 bg-white ">
           <NavBarPortada />
         </div>
         <div className=" h-screen flex flex-col justify-center ">
-          <h1 className=" text-5xl text-white mx-auto p-5 text-center z-20">
+          <h1 className="text-white mx-auto p-5 text-center z-20 text-3xl md:text-4xl lg:text-5xl">
             Trabajadores con experiencia y referencia
           </h1>
-          <h2 className=" text-4xl text-white mx-auto p-7 text-center z-20">
+          <h2 className="text-white mx-auto p-7 text-center z-20 text-xl md:text-3xl lg:text-4xl">
             Desarrolla tu oficio cerca de ti
           </h2>
           <FormHomePage />
@@ -83,4 +44,3 @@ export default function HomePage() {
     </>
   );
 }
-

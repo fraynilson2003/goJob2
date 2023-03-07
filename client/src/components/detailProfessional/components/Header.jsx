@@ -1,29 +1,39 @@
+import { imageUrlNotFound } from "../../../assets";
+
 export default function Header({ detail }) {
   return (
     <>
       <div>
-        <img src={detail.image} alt="" class="p-2" />
+        {detail.imagePerfil === "sin foto" ? (
+          <img
+            src={imageUrlNotFound}
+            className="w-[80px] lg:w-[160px]"
+            alt=""
+          />
+        ) : (
+          <img src={detail.imagePerfil} alt="" className="p-2" />
+        )}
       </div>
-      <div class="flex flex-col justify-between p-5">
-        <p class="px-3">
+      <div className="flex flex-col justify-between p-5">
+        <p className="px-3">
           {" "}
           {detail.firstName} {detail.lastName}{" "}
-          <i class="fa-regular fa-square-check"></i>
+          <i className="fa-regular fa-square-check"></i>
         </p>
         <p>
           {" "}
-          <i class="fa-solid fa-user px-3"></i>
-          {detail.job}
+          {/* <i className="fa-solid fa-user px-3"></i>
+          {detail.job} */}
         </p>
         <p>
           {" "}
-          <i class="fa-solid fa-wrench px-3"></i>
-          {detail.specificJob}
+          {/* <i className="fa-solid fa-wrench px-3"></i>
+          {detail.specificJob} */}
         </p>
         <p>
           {" "}
-          <i class="fa-solid fa-medal px-3"></i>
-          {detail.numberJobs} Trabajos
+          {/* <i className="fa-solid fa-medal px-3"></i>
+          {detail.numberJobs} Trabajos */}
         </p>
       </div>
     </>
