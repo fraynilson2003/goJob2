@@ -28,8 +28,8 @@ async function createSession(priceId, idProduct, product) {
       mode: "payment", // tipo de pago, como no es recurrente es payment
 
       success_url: `${FRONT_BASE_URL}stripe/${product.typeProfile}/${product.idContratista}/success/${idProduct}`, // si el pago es exitoso se redirige aqui
-      //cancel_url: `${FRONT_BASE_URL}stripe/${product.typeProfile}/${product.idContratista}/success/${idProduct}`, // si el pago es cancelado o fallo redirige aqui
-      cancel_url: `${FRONT_BASE_URL}stripe/${product.typeProfile}/${product.idContratista}/fail`, // si el pago es cancelado o fallo redirige aqui
+      cancel_url: `${FRONT_BASE_URL}stripe/${product.typeProfile}/${product.idContratista}/success/${idProduct}`, // si el pago es cancelado o fallo redirige aqui
+      //cancel_url: `${FRONT_BASE_URL}stripe/${product.typeProfile}/${product.idContratista}/fail`, // si el pago es cancelado o fallo redirige aqui
 
     });
 
