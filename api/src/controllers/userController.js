@@ -78,6 +78,7 @@ const getDbUser = async (page, page_size, querys, statementUser, statementeJob, 
 
     return {
       ...paginado,
+      totalCount: totalCount,
       result
     }
   }catch(error){

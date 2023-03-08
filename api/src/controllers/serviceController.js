@@ -117,6 +117,7 @@ const getServices = async (page, page_size, querys, statementService, statemente
 
     return {
       ...paginado,
+      totalCount: totalCount,
       result: service
     }
 
