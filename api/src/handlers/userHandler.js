@@ -338,6 +338,7 @@ const putUser = async (req, res) => {
   if(putUser.jobs) {
     idJobs = [...putUser.jobs]
     idJobsBoolean = true
+    delete putUser.jobs
   }
   
   try {
@@ -354,9 +355,53 @@ const putUser = async (req, res) => {
       await user.setJobs(idJobs);
     }
 
+    //devolcemos user actualizado
+    [
+ 
+    ]
+    let userActualizado = await User.findOne({
+      where: {id: idUser},
+      include: [
+        {
+          model: Job,
+          through: { 
+            attributes:[]
+          }
+        },
+        {
+          model: Service,
+          as: "myServices",
+          include:
+          {
+            model: User,
+            as: "postulantes",
+            attributes:["id", "firstName", "lastName", "user", "email", "phone", "imagePerfil", "rating_promedio", ],
+            through: { 
+              attributes:[]
+            }
+          }
+        },
+        {
+          model: Service,
+          as: "myTrabajos",
+          through: { 
+            attributes:[]
+          }
+        },
+        {
+          model: Service,
+          as: "postulaciones",
+          through: { 
+            attributes:[]
+          }
+        } 
+      ]
+    })
+
     return res.status(200).json({
       status: "success",
       message: "Actualizado correctamente",
+      user: userActualizado
     });
   } catch (error) {
     return res.status(400).json({

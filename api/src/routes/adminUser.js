@@ -12,3 +12,6 @@ router.get("/dashboard", auth, adminHandler.getInfoDashboard)
 /**************** DELETE ******************** */
 router.delete("/user/delete", auth,  adminHandler.deleteUser)
 module.exports = router;
+
+/************** PUT ***************** */
+router.put("/user/update", auth, adminHandler.putUserAdmin)

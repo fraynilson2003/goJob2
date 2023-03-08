@@ -135,6 +135,63 @@ const deleteUser = async (req, res) => {
     }
 };
 
+
+const putUserAdmin = async (req, res) => {
+  let idUser = req.body.id;
+  let putUser = req.body;
+
+  let idJobsBoolean = false
+  let idJobs
+  if(putUser.jobs) {
+    idJobs = [...putUser.jobs]
+    idJobsBoolean = true
+    delete putUser.jobs
+  }
+
+  //eliminaos el id del put
+  delete putUser.id
+  
+  
+  try {
+    //actualizamos el user
+    let newUser = await User.update(putUser, { where: { id: idUser } });
+
+    //actualizamos sus Jobs
+    let user;
+    if(idJobsBoolean){
+      user = await User.findOne({
+        where: { id: idUser },
+      });
+
+      await user.setJobs(idJobs);
+    }
+
+    let userActualizado = await User.findOne({
+      where: {id: idUser},
+      include: [
+        {      
+          model: Job,
+          through: {
+            attributes: [],
+          },
+        }
+      ]
+
+    })
+
+    return res.status(200).json({
+      status: "success",
+      message: "Actualizado correctamente",
+      user: userActualizado
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
 const deleteService = async (req, res)=>{
   let idService = req.body.id
   try {
@@ -150,5 +207,6 @@ const deleteService = async (req, res)=>{
 
 module.exports = {
   getInfoDashboard,
-  deleteUser
+  deleteUser,
+  putUserAdmin
 };
