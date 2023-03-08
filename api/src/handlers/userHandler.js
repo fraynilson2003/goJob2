@@ -398,9 +398,13 @@ const putUser = async (req, res) => {
       ]
     })
 
+    let token = createToken(userActualizado);
+
+
     return res.status(200).json({
       status: "success",
       message: "Actualizado correctamente",
+      token: token,
       user: userActualizado
     });
   } catch (error) {
