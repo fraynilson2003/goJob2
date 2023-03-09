@@ -127,7 +127,7 @@ const getUserID = async (req, res) => {
     if (!id) throw Error("Mising data");
 
     //extraemos datos y comprobamos si hay datos
-    userTotal = await getUserByID(id, state);
+    userTotal = await getUserByID(id);
 
     //si todo salio bien
     return res.status(200).json({

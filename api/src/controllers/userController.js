@@ -146,7 +146,7 @@ const paginacion = (page, page_size, totalPages, totalCount, querys)=>{
 
 }
 
-const getUserByID = async (id, state) =>{
+const getUserByID = async (id) =>{
 
 
   try{
