@@ -120,13 +120,18 @@ const getAllUser = async (req, res) => {
 
 const getUserID = async (req, res) => {
   const id = req.params.id;
+
+  let state = String(true)
+  if(req.body.state != undefined) state =  String(req.body.state) 
+  //else state = true
+
   let userTotal;
 
   try {
     if (!id) throw Error("Mising data");
 
     //extraemos datos y comprobamos si hay datos
-    userTotal = await getUserByID(id);
+    userTotal = await getUserByID(id, state);
 
     //si todo salio bien
     return res.status(200).json({
