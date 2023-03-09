@@ -17,22 +17,8 @@ import {
 } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 
-function FilterUser({ totalPages }) {
+function FilterUser() {
   let configFilterUser = useSelector((state) => state.configFilterUser); // estado filtra usuario
-  //el cual es un objeto igual a este
-  //config para filtros services
-  // configFilterUser: {
-  //   page: 1,
-  //   page_size: 15,
-  //   name: "",
-  //   job: false,
-  //   provincia: "Buenos Aires",
-  //   ciudad: false,
-  //   dias: false,
-  //   horario: "mañana",
-  //   role: "professional",
-  //   orderName: false,
-  //   orderRating: "DESC",
 
   // modificando por ejemplo name: la ruta del api regresar los usuarios correspondientes
 
@@ -63,6 +49,7 @@ function FilterUser({ totalPages }) {
       configFilterUserPut({
         //actualizamos el estado de redux configFilterUser con el array newDias
         ...configFilterUser,
+        page: 1,
         dias: newDias,
       })
     );
@@ -85,6 +72,7 @@ function FilterUser({ totalPages }) {
     let newConfig = {
       //aqui vamos  guardar la propiedad que tengamos con su valor
       ...configFilterUser, //guardamos lo que ya llevabamos
+      page: 1,
       [propiedadFilter]: value, //mismo ejemplo de arriba horario=mañana
     };
 
@@ -104,13 +92,15 @@ function FilterUser({ totalPages }) {
       newConfig = {
         // creamos el nuevo modelo de configFilterUser
         ...configFilterUser, //traemos todo lo que tenemos en el estado de redux
+        page: 1,
         name: value, //pisamos el value
       };
       dispatch(configFilterUserPut(newConfig)); //actualizamos el valor de configFilterUser con ese dispatch
-    } else {
+    } else if (value.length == 0) {
       newConfig = {
         //en caso de que sea menor a 3 actualizamos el estado
         ...configFilterUser,
+        page: 1,
         name: "", //con name vacio
       };
 
@@ -132,7 +122,7 @@ function FilterUser({ totalPages }) {
         </div>
 
         {/* searchFilter*/}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1">
+        <div className="grid grid-cols-1 sm:grid-cols- md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ">
           <div className="col-span-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-center mb-4">
               <form className="col-span-2 md:grid-cols-3">
@@ -235,17 +225,19 @@ function FilterUser({ totalPages }) {
                   className="p-2 py-2 pl-2 pr-4 outline-none w-full border-none text-xs md:text-sm lg:text-base"
                   onChange={handleOptionFilter}
                 >
+                  <option key={1} value={false} name={"horario"}>
+                    {"All"}
+                  </option>
                   {horario.length &&
-                    horario.map((ele) => (
-                      <option value={ele} name={"horario"}>
+                    horario.map((ele, i) => (
+                      <option key={i + 1} value={ele} name={"horario"}>
                         {ele}
                       </option>
                     ))}
                 </select>
               </div>
 
-              {/* orderName ASC*/}
-
+              {/* orderRating DESC */}
               <div className="relative w-full">
                 <p className="font-sans pt-1 pb-1 not-italic font-medium text-gray-700  text-xs md:text-sm lg:text-base">
                   Rating
@@ -273,27 +265,27 @@ function FilterUser({ totalPages }) {
             <p className="font-sans pt-1 pb-1 not-italic font-medium text-gray-700 text-xs md:text-sm lg:text-base">
               Por dia
             </p>
-            <div className=" grid grid-cols-2 gap-1 w-full w-[400px]">
-              {dias.map((dia) => (
-                <div
-                  key={dia.id}
-                  // className="py-1 px-4 rounded-md border border-solid border-gray-400"
-                >
-                  <input
-                    type="checkbox"
-                    //checked={configFilterUser.result.includes(dia.name)}
-                    value={dia.name}
-                    onChange={handleCheckedDias}
-                    className="mr-2 leading-tight "
-                  />
-                  <span className="text-xs  md:text-sm lg:text-base">
-                    {capitalizeFirstLetter(dia.name)}
-                  </span>
-                </div>
-              ))}
-            </div>
+    
+            <select
+              value={configFilterUser.dias}
+              onChange={handleOptionFilter}
+              className="p-2 py-2 pl-2 pr-4 outline-none w-full border-none text-xs md:text-sm lg:text-base"
+              // className="absolute z-10 right-0 top-full mt-2 w-full bg-gray-200 rounded-md px-4 py-2 text-sm"
+            >
+                <option key={1} value={false} name={"dias"}>
+                  {"All"}
+                </option>
+              {dias.length && dias.map((dia,i)=>
+                <option key={i+1} value={dia.name} name={"dias"}>
+                  {dia.name}
+                </option>
+              )}
+
+
+
+            </select>
+            
           </div>
-          {/* orderRating DESC */}
         </div>
       </div>
     </>

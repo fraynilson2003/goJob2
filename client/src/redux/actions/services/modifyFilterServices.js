@@ -10,4 +10,3 @@ export let configFilterService = (newConfig) => {
     payload: newConfig,
   };
 };
-

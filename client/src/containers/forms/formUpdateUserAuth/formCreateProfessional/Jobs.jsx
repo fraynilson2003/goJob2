@@ -4,37 +4,37 @@ export default function Jobs({ jobs, handleJob, handleDay, changeInput }) {
   const dias = [
     {
       id: 1,
-      name: "lunes",
+      name: "Lunes",
     },
     {
       id: 2,
-      name: "martes",
+      name: "Martes",
     },
     {
       id: 3,
-      name: "miercoles",
+      name: "Miercoles",
     },
     {
       id: 4,
-      name: "jueves",
+      name: "Jueves",
     },
     {
       id: 5,
-      name: "viernes",
+      name: "Viernes",
     },
     {
       id: 6,
-      name: "sabado",
+      name: "Sabado",
     },
     {
       id: 7,
-      name: "domingo",
+      name: "Domingo",
     },
   ];
 
   return (
     <>
-      <div className="items-center justify-center w-[50%] m-10">
+      <div className="items-center justify-center w-[70%] m-10">
         <div>
           <h2 className="mt-4 text-xl mb-5 font-extrabold text-blue-900 lg:text-left">
             Qué desempeñas
@@ -114,7 +114,7 @@ export default function Jobs({ jobs, handleJob, handleDay, changeInput }) {
               {horario.length &&
                 horario.map((ele) => <option value={ele}>{ele}</option>)}
             </select>
-            <input type="submit" value="Enviar" />
+            <input type="submit" value="" />
           </form>
         </div>
 

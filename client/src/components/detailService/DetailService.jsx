@@ -10,7 +10,15 @@ import Suggestions from "./components/Suggestions";
 // import Navbar from "../navbarPortada/NavBar";
 
 import Loading from "../loading/Loading";
-import { suggestionServices } from "../../redux/actions/services/getServices";
+import {
+  stateSuggestionService,
+  suggestionServices,
+} from "../../redux/actions/services/getServices";
+import {
+  getMyPostulaciones,
+  stateSelected,
+  stateSelectedComun,
+} from "../../redux/actions/professionalActions";
 
 export default function DetailService() {
   const params = useParams();
@@ -19,6 +27,8 @@ export default function DetailService() {
 
   // get detail service
   const detail = useSelector((state) => state.serviceDetail);
+  const suggestionJob = useSelector((state) => state.stateSuggestionService);
+  let jobNameState = detail.Jobs?.map((job) => job.name)[0];
 
   // userLogin
   const user = useSelector((state) => state.userLogin);
@@ -32,6 +42,14 @@ export default function DetailService() {
   );
 
   const [hasFetchedServiceById, setHasFetchedServiceById] = useState(false);
+
+  let myPostulaciones = useSelector((state) => state.mypostulaciones);
+
+  useEffect(() => {
+    dispatch(getMyPostulaciones());
+    dispatch(stateSelected(1));
+    dispatch(stateSelectedComun(1));
+  }, []);
 
   useEffect(() => {
     if (!hasFetchedServiceById) {
@@ -50,37 +68,26 @@ export default function DetailService() {
     }
   }, [id, detail, hasFetchedServiceById]);
 
-  // useEffect(() => {
-  //   dispatch(getServiceById(id));
-  // }, [id]);
-
-  // useEffect(() => {
-  //   dispatch(
-  //     suggestionServices({
-  //       ...configService,
-  //       job: detail.Jobs?.map((job) => job.id)[0],
-  //     })
-  //   );
-  // }, [detail]);
-
   return (
     <>
-      <div className="grid grid-cols-4 gap-1 bg-gray-200">
+      <div className="grid grid-cols-4 gap-1 bg-gray-200 h-screen">
         <div className="col-span-1 ">
-          <div className="border-2 rounded-xl m-2 p-4 bg-white ">
+          <div className="border-2 rounded-xl m-2 p-4 bg-white">
             <Suggestions
               detail={detail}
               totalPages={totalPages}
               job={detail.Jobs?.map((job) => job.id)[0]}
+              jobName={suggestionJob}
             />
           </div>
         </div>
         <div className="col-span-2">
           {Object.keys(detail).length !== 0 ? (
-            <div>
+            <div className="">
               <div className="border-2 rounded-xl flex m-2 p-4 bg-white">
                 <HeaderService
                   firstName={detail.userId?.firstName}
+                  tittle={detail.tittle}
                   lastName={detail.userId?.lastName}
                   imageurl={detail.imageServiceUrl}
                   imagePerfil={detail.userId?.imagePerfil}
@@ -96,8 +103,10 @@ export default function DetailService() {
             </div>
           ) : (
             <>
-              <div className="flex items-center justify-center m-5">
-                <Loading />
+              <div class="h-screen flex items-center justify-center">
+                <div class="flex items-center justify-center m-5">
+                  <Loading />
+                </div>
               </div>
             </>
           )}
@@ -108,6 +117,7 @@ export default function DetailService() {
             lastName={user?.lastName}
             imageurl={user?.imagePerfil}
             id={detail.id}
+            myPostulaciones={myPostulaciones}
           />
         </div>
       </div>
