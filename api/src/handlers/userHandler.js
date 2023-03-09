@@ -121,10 +121,6 @@ const getAllUser = async (req, res) => {
 const getUserID = async (req, res) => {
   const id = req.params.id;
 
-  let state = String(true)
-  if(req.body.state != undefined) state =  String(req.body.state) 
-  //else state = true
-
   let userTotal;
 
   try {

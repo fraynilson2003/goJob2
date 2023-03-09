@@ -151,7 +151,7 @@ const getUserByID = async (id, state) =>{
 
   try{
     const result = await User.findOne({
-      where: {id: id, state: state},
+      where: {id: id},
       attributes: { exclude: ['password'] },
       include: [
         {
