@@ -207,7 +207,7 @@ const deleteService = async (req, res)=>{
       }
     )
 
-    return res.status(405).json({
+    return res.status(200).json({
       status: "success",
       message: "Elimino correctamente el servicio",
 
@@ -236,7 +236,7 @@ const activeService = async (req, res)=>{
       }
     )
 
-    return res.status(405).json({
+    return res.status(200).json({
       status: "success",
       message: "activo correctamente el servicio",
 
