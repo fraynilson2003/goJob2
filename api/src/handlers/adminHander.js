@@ -197,9 +197,56 @@ const deleteService = async (req, res)=>{
   try {
     idService = Number(idService)
     
+    //eliminamos el servicio
+    let putServicee = await Service.update(
+      {
+        active: "false"
+      },
+      {
+        where: {id: idService}
+      }
+    )
+
+    return res.status(405).json({
+      status: "success",
+      message: "Elimino correctamente el servicio",
+
+    })
 
   } catch (error) {
+    return res.status(405).json({
+      status: "error",
+      message: error.message
+    })
+  }
+}
+
+const activeService = async (req, res)=>{
+  let idService = req.body.id
+  try {
+    idService = Number(idService)
     
+    //eliminamos el servicio
+    let putServicee = await Service.update(
+      {
+        active: "true"
+      },
+      {
+        where: {id: idService}
+      }
+    )
+
+    return res.status(405).json({
+      status: "success",
+      message: "activo correctamente el servicio",
+
+    })
+
+  } catch (error) {
+    return res.status(405).json({
+      status: "error",
+      message: error.message
+    })
   }
 }
 
@@ -208,5 +255,7 @@ const deleteService = async (req, res)=>{
 module.exports = {
   getInfoDashboard,
   deleteUser,
-  putUserAdmin
+  putUserAdmin,
+  deleteService,
+  activeService
 };
